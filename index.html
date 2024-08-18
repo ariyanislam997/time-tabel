@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>24-Hour Time Table</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        background: url("https://images.unsplash.com/photo-1501594907357-f51d53f7be3f")
+          no-repeat center center fixed;
+        background-size: cover;
+        color: #333;
+      }
+      table {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 8px;
+      }
+      th {
+        color: #ffffff;
+      }
+      td.activity {
+        color: #1e40af;
+        font-weight: bold;
+      }
+      td.time {
+        color: #d97706;
+      }
+      td.details button {
+        color: #10b981;
+      }
+      td.remaining-time {
+        color: #ef4444;
+      }
+      .started {
+        background-color: #d1fae5; /* Light green background for started activities */
+      }
+      .modal-bg {
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .modal-content {
+        background-color: #ffffff;
+      }
+    </style>
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <header class="bg-blue-700 text-white text-center py-4 px-4 md:px-6">
+      <h1 class="text-lg md:text-2xl font-bold">My Daily Schedule</h1>
+      <div id="clock" class="text-sm md:text-lg mt-2"></div>
+    </header>
+
+    <main class="flex-grow max-w-4xl mx-auto p-4">
+      <table class="min-w-full shadow-md rounded-lg overflow-hidden">
+        <thead class="bg-blue-600 text-white">
+          <tr>
+            <th class="py-3 px-4 text-left">Activity</th>
+            <th class="py-3 px-4 text-left">Time</th>
+            <th class="py-3 px-4 text-left">Details</th>
+            <th class="py-3 px-4 text-left">Remaining Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Activity Rows -->
+          <tr class="border-b">
+            <td class="py-3 px-4 activity">Breakfast & Freshen Up</td>
+            <td class="py-3 px-4 time">7:00 AM - 7:30 AM</td>
+            <td class="py-3 px-4 details">
+              <button onclick="openModal('breakfast')" class="hover:underline">
+                View Details
+              </button>
+            </td>
+            <td
+              class="py-3 px-4 remaining-time started"
+              id="remainder-breakfast"
+            >
+              Started
+            </td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-3 px-4 activity">Class</td>
+            <td class="py-3 px-4 time">7:40 AM - 11:00 AM</td>
+            <td class="py-3 px-4 details">
+              <button onclick="openModal('class')" class="hover:underline">
+                View Details
+              </button>
+            </td>
+            <td class="py-3 px-4 remaining-time" id="remainder-class">
+              Calculating...
+            </td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-3 px-4 activity">Gaming</td>
+            <td class="py-3 px-4 time">11:10 AM - 12:30 PM</td>
+            <td class="py-3 px-4 details">
+              <button onclick="openModal('gaming')" class="hover:underline">
+                View Details
+              </button>
+            </td>
+            <td class="py-3 px-4 remaining-time" id="remainder-gaming">
+              Calculating...
+            </td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-3 px-4 activity">Duhr Namaz & Lunch</td>
+            <td class="py-3 px-4 time">12:30 PM - 1:40 PM</td>
+            <td class="py-3 px-4 details">
+              <button onclick="openModal('duhr')" class="hover:underline">
+                View Details
+              </button>
+            </td>
+            <td class="py-3 px-4 remaining-time" id="remainder-duhr">
+              Calculating...
+            </td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-3 px-4 activity">Rest</td>
+            <td class="py-3 px-4 time">1:40 PM - 4:40 PM</td>
+            <td class="py-3 px-4 details">
+              <button onclick="openModal('rest')" class="hover:underline">
+                View Details
+              </button>
+            </td>
+            <td class="py-3 px-4 remaining-time" id="remainder-rest">
+              Calculating...
+            </td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-3 px-4 activity">Asr Namaz</td>
+            <td class="py-3 px-4 time">4:40 PM - 5:00 PM</td>
+            <td class="py-3 px-4 details">
+              <button onclick="openModal('asr')" class="hover:underline">
+                View Details
+              </button>
+            </td>
+            <td class="py-3 px-4 remaining-time" id="remainder-asr">
+              Calculating...
+            </td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-3 px-4 activity">English Practice</td>
+            <td class="py-3 px-4 time">5:00 PM - 6:00 PM</td>
+            <td class="py-3 px-4 details">
+              <button onclick="openModal('english')" class="hover:underline">
+                View Details
+              </button>
+            </td>
+            <td class="py-3 px-4 remaining-time" id="remainder-english">
+              Calculating...
+            </td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-3 px-4 activity">Maghrib Namaz</td>
+            <td class="py-3 px-4 time">6:35 PM - 6:50 PM</td>
+            <td class="py-3 px-4 details">
+              <button onclick="openModal('maghrib')" class="hover:underline">
+                View Details
+              </button>
+            </td>
+            <td class="py-3 px-4 remaining-time" id="remainder-maghrib">
+              Calculating...
+            </td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-3 px-4 activity">Book Reading</td>
+            <td class="py-3 px-4 time">7:00 PM - 7:30 PM</td>
+            <td class="py-3 px-4 details">
+              <button onclick="openModal('php')" class="hover:underline">
+                View Details
+              </button>
+            </td>
+            <td class="py-3 px-4 remaining-time" id="remainder-php">
+              Calculating...
+            </td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-3 px-4 activity">Dinner</td>
+            <td class="py-3 px-4 time">7:30 PM - 8:00 PM</td>
+            <td class="py-3 px-4 details">
+              <button onclick="openModal('dinner')" class="hover:underline">
+                View Details
+              </button>
+            </td>
+            <td class="py-3 px-4 remaining-time" id="remainder-dinner">
+              Calculating...
+            </td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-3 px-4 activity">Isha Namaz</td>
+            <td class="py-3 px-4 time">7:50 PM - 8:10 PM</td>
+            <td class="py-3 px-4 details">
+              <button onclick="openModal('isha')" class="hover:underline">
+                View Details
+              </button>
+            </td>
+            <td class="py-3 px-4 remaining-time" id="remainder-isha">
+              Calculating...
+            </td>
+          </tr>
+          <tr>
+            <td class="py-3 px-4 activity">Class/Homework</td>
+            <td class="py-3 px-4 time">9:10 PM - 11:10 PM</td>
+            <td class="py-3 px-4 details">
+              <button onclick="openModal('homework')" class="hover:underline">
+                View Details
+              </button>
+            </td>
+            <td class="py-3 px-4 remaining-time" id="remainder-homework">
+              Calculating...
+            </td>
+          </tr>
+          <tr>
+            <td class="py-3 px-4 activity">Sleep</td>
+            <td class="py-3 px-4 time">11:10 PM - 7:00 AM</td>
+            <td class="py-3 px-4 details">
+              <button onclick="openModal('sleep')" class="hover:underline">
+                View Details
+              </button>
+            </td>
+            <td class="py-3 px-4 remaining-time" id="remainder-sleep">
+              Calculating...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+
+    <!-- Modal -->
+    <div
+      id="myModal"
+      class="modal-bg fixed inset-0 flex items-center justify-center hidden"
+    >
+      <div
+        class="modal-content bg-white p-6 rounded-lg shadow-lg max-w-md w-full"
+      >
+        <h2 id="modalTitle" class="text-xl font-bold mb-4">Activity Details</h2>
+        <p id="modalContent" class="mb-4">Activity Details here.</p>
+        <p id="modalRemainder" class="text-red-500 mb-4">
+          Time remaining here.
+        </p>
+        <button
+          onclick="closeModal()"
+          class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const activities = {
+        breakfast: {
+          time: "07:00",
+          details: "Breakfast & Freshen Up from 7:00 AM to 7:30 AM.",
+        },
+        class: { time: "07:40", details: "Class from 7:40 AM to 11:00 AM." },
+        gaming: { time: "11:10", details: "Gaming from 11:10 AM to 12:30 PM." },
+        duhr: {
+          time: "12:30",
+          details: "Duhr Namaz & Lunch from 12:30 PM to 1:40 PM.",
+        },
+        rest: { time: "13:40", details: "Rest from 1:40 PM to 4:40 PM." },
+        asr: { time: "16:40", details: "Asr Namaz from 4:40 PM to 5:00 PM." },
+        english: {
+          time: "17:00",
+          details: "English Spoken Practice from 5:00 PM to 6:00 PM.",
+        },
+        maghrib: {
+          time: "18:35",
+          details: "Maghrib Namaz from 6:35 PM to 6:50 PM.",
+        },
+        php: {
+          time: "19:00",
+          details: "PHP Language Book Reading from 7:00 PM to 7:30 PM.",
+        },
+        dinner: { time: "19:30", details: "Dinner from 7:30 PM to 8:00 PM." },
+        isha: { time: "19:50", details: "Isha Namaz from 7:50 PM to 8:10 PM." },
+        homework: {
+          time: "21:10",
+          details: "Class/Homework from 9:10 PM to 11:10 PM.",
+        },
+        sleep: { time: "23:10", details: "Sleep from 11:10 PM to 7:00 AM." },
+      };
+
+      function updateClock() {
+        const now = new Date();
+        const hours = now.getHours() % 12 || 12;
+        const minutes = now.getMinutes().toString().padStart(2, "0");
+        const seconds = now.getSeconds().toString().padStart(2, "0");
+        const ampm = now.getHours() >= 12 ? "PM" : "AM";
+        document.getElementById("clock").textContent =
+          `${hours}:${minutes}:${seconds} ${ampm}`;
+      }
+
+      function updateRemainder(activityTime, elementId) {
+        const now = new Date();
+        const [startHours, startMinutes] = activityTime.split(":");
+        const activityDate = new Date();
+        activityDate.setHours(parseInt(startHours), parseInt(startMinutes));
+        const timeDiff = activityDate - now;
+        const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+        document.getElementById(elementId).textContent =
+          timeDiff > 0 ? `${hours}h ${minutes}m left` : "Started";
+        if (timeDiff <= 0) {
+          document.getElementById(elementId).classList.add("started");
+        }
+      }
+
+      function updateAllRemainders() {
+        for (const [activity, { time }] of Object.entries(activities)) {
+          updateRemainder(time, `remainder-${activity}`);
+        }
+      }
+
+      function openModal(activity) {
+        const { details, time } = activities[activity];
+        document.getElementById("modalTitle").textContent =
+          `${activity.charAt(0).toUpperCase() + activity.slice(1)} Details`;
+        document.getElementById("modalContent").textContent = details;
+        updateRemainder(time, "modalRemainder");
+        document.getElementById("myModal").classList.remove("hidden");
+      }
+
+      function closeModal() {
+        document.getElementById("myModal").classList.add("hidden");
+      }
+
+      setInterval(updateClock, 1000);
+      setInterval(updateAllRemainders, 1000);
+      updateClock();
+      updateAllRemainders();
+    </script>
+  </body>
+</html>
